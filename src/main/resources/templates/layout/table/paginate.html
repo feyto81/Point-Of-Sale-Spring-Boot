@@ -1,0 +1,79 @@
+<div th:fragment="paginate" xmlns:th="http://www.thymeleaf.org">
+
+
+<!--    <div class="col-sm-12">-->
+<!--        <div class="card-footer text-left">-->
+<!--            <span th:text="'Showing '+${(data.number==0)?1:(data.number*data.size)+1}+' to '+${(data.size*data.number)+data.NumberOfElements}+' of '+${data.totalElements}+' entries'"></span>-->
+<!--        </div>-->
+<!--        <div class="card-footer text-right" style="margin-top: -80px">-->
+<!--            <nav class="d-inline-block">-->
+<!--                <ul class="pagination mb-0">-->
+<!--                    <li class="page-item" th:classappend="${data.number+1==1} ? 'disabled'">-->
+<!--                        <a class="page-link" href="#" tabindex="-1" th:href="@{${currentUrl}(page=${data.number})}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"-->
+<!--                           th:classappend="${data.number+1==1} ? 'disabled'">-->
+<!--                            Previous-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item" th:each="pag,i : ${paginate}"-->
+<!--                        th:classappend="${(pag=='...'?'disabled':'')+(pag==(data.number + 1).toString()?'active':'')}">-->
+<!--                        <a-->
+<!--                                th:href="@{${currentUrl}(page=${pag})}"-->
+<!--                                th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"-->
+<!--                                class="page-link"-->
+
+
+<!--                                th:text="${pag}">-->
+<!--                            xx-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item" th:classappend="${data.number+1==data.totalPages} ? 'disabled'">-->
+<!--                        <a class="page-link" href="#" th:href="@{${currentUrl}(page=${data.number+2})}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"-->
+<!--                           th:classappend="${data.number+1==data.totalPages} ? 'disabled'">-->
+<!--                            Next-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </nav>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="float-left">
+        <nav>
+            <span th:text="'Showing '+${(data.number==0)?1:(data.number*data.size)+1}+' to '+${(data.size*data.number)+data.NumberOfElements}+' of '+${data.totalElements}+' entries'"></span>
+        </nav>
+    </div>
+    <div class="float-right">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${data.number+1==1} ? 'disabled'">
+                    <a class="page-link" href="#" tabindex="-1"
+                       th:href="@{${currentUrl}(page=${data.number})}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"
+                       th:classappend="${data.number+1==1} ? 'disabled'">
+                        <span aria-hidden="true">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="pag,i : ${paginate}"
+                    th:classappend="${(pag=='...'?'disabled':'')+(pag==(data.number + 1).toString()?'active':'')}">
+                    <a
+                            th:href="@{${currentUrl}(page=${pag})}"
+                            th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"
+                            class="page-link"
+
+
+                            th:text="${pag}">
+                        xx
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${data.number+1==data.totalPages} ? 'disabled'">
+                    <a class="page-link" href="#" th:href="@{${currentUrl}(page=${data.number+2})}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('page')})"
+                       th:classappend="${data.number+1==data.totalPages} ? 'disabled'">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+
+</div>

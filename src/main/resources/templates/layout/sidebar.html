@@ -1,0 +1,102 @@
+
+    <div class="main-sidebar sidebar-style-2" th:fragment="sidebar" xmlns:th="http://www.thymeleaf.org">
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-brand">
+                <a href="index.html"> <img alt="image" th:src="@{/backend/assets/img/logo.png}" class="header-logo" /> <span
+                        class="logo-name">POS</span>
+                </a>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-header">NAVIGATION</li>
+                <li class="dropdown" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).HOME)) ? 'active':''}">
+                    <a th:href="@{${T(com.crocodic.koperasi.string.AdminUrlString).HOME}}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).HOME)) ? 'active':''}" class="nav-link">
+                        <i data-feather="monitor"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+            </ul>
+
+<!--            <ul class="sidebar-menu">-->
+<!--                <li th:each="row,i : ${T(com.crocodic.koperasi.helpers.Helpers).roleMenus(#httpSession)}">-->
+<!--                    <a th:href="@{${row.path}}"-->
+<!--                       th:classappend="${(#httpServletRequest.requestURL.toString().contains(row.path)) ? 'active':''}"-->
+<!--                       th:if="${#lists.isEmpty(row.roleMenus)}" class="nav-link">-->
+<!--                        <i th:data-feather="${row.icon}" th:classappend="${row.icon}"></i>-->
+<!--                        <span th:text="${row.name}"></span>-->
+<!--                    </a>-->
+<!--                    <a href="#" class="menu-toggle nav-link has-dropdown"-->
+<!--                           th:classappend="${row.icon}"-->
+<!--                           th:if="${not #lists.isEmpty(row.roleMenus)}"><i-->
+<!--                            th:data-feather="${row.icon}"></i>-->
+<!--                        <span th:text="${row.name}"></span>-->
+<!--                    </a>-->
+<!--                    <ul class="dropdown-menu" th:if="${not #lists.isEmpty(row.roleMenus)}">-->
+<!--                        <li th:each="child,i : ${row.roleMenus}">-->
+<!--                            <a class="nav-link"-->
+<!--                               th:href="@{${child.path}}"-->
+<!--                               th:classappend="${(#httpServletRequest.requestURL.toString().contains(child.path)) ? 'active':''}">-->
+<!--                                <span th:text="${child.name}"></span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+
+<!--                    </ul>-->
+<!--                </li>-->
+
+<!--            </ul>-->
+            <ul class="sidebar-menu" th:each="row,i : ${T(com.crocodic.koperasi.helpers.Helpers).roleMenus(#httpSession)}">
+                <li th:classappend="${(#httpServletRequest.requestURL.toString().contains(row.path)) ? 'active':''}" class="">
+                    <a th:href="@{${row.path}}"
+                       UnitsRepository
+                       th:if="${#lists.isEmpty(row.roleMenus)}" class="nav-link">
+                        <i th:data-feather="${row.icon}" th:classappend="${row.icon}"></i>
+                        <span th:text="${row.name}"></span>
+                    </a>
+                </li>
+                <li class="dropdown" th:if="${not #lists.isEmpty(row.roleMenus)}">
+                    <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                            th:data-feather="${row.icon}" th:classappend="${row.icon}"></i>
+                        <span th:text="${row.name}"></span></a>
+                    <ul class="dropdown-menu" th:if="${not #lists.isEmpty(row.roleMenus)}">
+                        <li th:each="child,i : ${row.roleMenus}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(child.path)) ? 'active':''}">
+                            <a
+                               th:href="@{${child.path}}" class="nav-link">
+                                <span th:text="${child.name}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+
+
+            <ul class="sidebar-menu" th:if="${session.is_superadmin.toString()=='1'}">
+                <li class="menu-header">Super Admin</li>
+                <li class="dropdown" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEROLES)) ? 'active':''}">
+                    <a th:href="@{${T(com.crocodic.koperasi.string.AdminUrlString).MANAGEROLES}}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEROLES)) ? 'active':''}" class="nav-link">
+                        <i data-feather="feather"></i>
+                        <span>Detail Hak Akses</span>
+                    </a>
+                </li>
+                <li class="dropdown" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEUSERS)) ? 'active':''}">
+                    <a th:href="@{${T(com.crocodic.koperasi.string.AdminUrlString).MANAGEUSERS}}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEUSERS)) ? 'active':''}" class="nav-link">
+                        <i data-feather="users"></i>
+                        <span>Users Management</span>
+                    </a>
+                </li>
+                <li class="dropdown" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEMENU)) ? 'active':''}">
+                    <a th:href="@{${T(com.crocodic.koperasi.string.AdminUrlString).MANAGEMENU}}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).MANAGEMENU)) ? 'active':''}" class="nav-link">
+                        <i data-feather="align-justify"></i>
+                        <span>Menu Management</span>
+                    </a>
+                </li>
+                <li class="dropdown" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).LOGS)) ? 'active':''}">
+                    <a th:href="@{${T(com.crocodic.koperasi.string.AdminUrlString).LOGS}}" th:classappend="${(#httpServletRequest.requestURL.toString().contains(T(com.crocodic.koperasi.string.AdminUrlString).LOGS)) ? 'active':''}" class="nav-link">
+                        <i data-feather="flag"></i>
+                        <span>Log User Access</span>
+                    </a>
+                </li>
+            </ul>
+
+        </aside>
+    </div>

@@ -1,0 +1,326 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/templates}">
+<th:block layout:fragment="css">
+<!--    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
+<!--    <link rel="stylesheet" href="https://resources/demos/style.css">-->
+    <style type="text/css">
+        body.dragging, body.dragging * {
+            cursor: move !important;
+        }
+
+        .dragged {
+            position: absolute;
+            opacity: 0.7;
+            z-index: 2000;
+        }
+
+        .draggable-menu {
+            padding: 0 0 0 0;
+            margin: 0 0 0 0;
+        }
+
+        .draggable-menu li ul {
+            margin-top: 6px;
+        }
+
+        .draggable-menu li div {
+            padding: 11px 11px;
+            border: 1px solid #cccccc;
+            background: #eeeeee;
+            cursor: move;
+        }
+
+        .draggable-menu li .is-dashboard {
+            background: #fff6e0;
+        }
+
+        .draggable-menu li .icon-is-dashboard {
+            color: #ffb600;
+        }
+
+        .draggable-menu li {
+            list-style-type: none;
+            margin-bottom: 4px;
+            min-height: 35px;
+        }
+
+        .draggable-menu li.placeholder {
+            position: relative;
+            border: 1px dashed #b7042c;
+            background: #ffffff;
+            /** More li styles **/
+        }
+
+        .draggable-menu li.placeholder:before {
+            position: absolute;
+            /** Define arrowhead **/
+        }
+    </style>
+</th:block>
+<div class="main-content" layout:fragment="content">
+    <section class="section">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning alert-has-icon alert-dismissible show fade" th:if="${error}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Oops</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${error}" th:if="${error}"></strong>
+                    </div>
+                </div>
+                <div class="alert alert-success alert-has-icon alert-dismissible show fade" th:if="${success}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Wow, good job...</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${success}" th:if="${success}"></strong>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-5">
+                    <div class="card card-small mb-4">
+                        <div class="card-header border-bottom">
+                            <a title="Return" class="icBack">
+                                Ordering Menu
+                                <span id='menu-saved-info' style="display:none" class='pull-right text-success'>
+                          <i class='fa fa-check'></i> Menu Saved !
+                        </span>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <ul class='draggable-menu draggable-menu-active'>
+                                <li th:attr="data-id=${row.id},data-name=${row.name}" th:if="${not #lists.isEmpty(data)}" th:each="row,i : ${data}">
+                                    <div class=''>
+                                        <i th:data-feather="${row.icon}" th:classappend="${row.icon}"></i>
+                                        <span th:text="${row.name}"></span>
+                                        <span class='pull-right'>
+                                  <a class='fa fa-pencil-alt' title='Edit' th:href="@{${url}+'/edit/'+${row.id}}"></a>&nbsp;&nbsp;
+                                  <a title='Delete' class='fa fa-trash' th:onclick="'hapusData(\'cms_menus/delete/' +${row.id} + '\');'" href='javascript:void(0)'></a></span>
+                                        <br/>
+                                        </em>
+                                    </div>
+                                    <ul>
+                                        <li th:attr="data-id=${child.id},data-name=${child.name}" th:if="${not #lists.isEmpty(row.roleMenus)}" th:each="child,x : ${row.roleMenus}">
+                                            <div>
+                                                <!--                                      <i class="fa" th:classappend="${child.icon}"></i>-->
+                                                <span th:text="${child.name}"></span>
+                                                <span class='pull-right'>
+                                          <a class='fa fa-pencil-alt' title='Edit' th:href="@{${url}+'/edit/'+${child.id}}"></a>&nbsp;&nbsp;
+                                          <a title="Delete" class='fa fa-trash'  th:onclick="'hapusData(\'cms_menus/delete/' +${child.id} + '\');'" href='javascript:void(0)'></a>
+                                        </span>
+                                                <br/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+
+                            <div align="center"  th:if="${#lists.isEmpty(data)}">Active menu is empty, please add new menu</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-7">
+                    <div class="card card-small mb-4">
+                        <form class="form-horizontal" th:action="@{${url}+'/save'}" method="POST" th:object="${menus}"
+                              th:with="currentUrl=(${@currentUrlWithoutParam.apply('')})">
+
+                            <input type="hidden" name="current_url" th:value="${currentUrl}">
+                            <input type="hidden" th:field="*{id}" th:if="${edit}">
+                            <input type="hidden" name="edit" value="true" th:if="${edit}">
+                            <input type="hidden" name="sorting" value="0" th:field="*{sorting}">
+                            <input type="hidden" name="parentId" value="0" th:field="*{parentId}">
+                            <div class="card-header border-bottom">
+                                <a title="Return" class="icBack">
+                                    &nbsp; <span th:text="${btn}"></span>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Nama Menu</label>
+                                    <input type="text" required="" placeholder="Enter Nama Menu" class="form-control" maxlength="70" value="" name="name"
+                                           th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Path Menu</label>
+                                    <input type="text" required="" placeholder="Enter Path Menu" class="form-control" maxlength="70" value="" name="path"
+                                           th:field="*{path}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Icon</label>
+                                    <select name="icon" th:field="*{icon}" id="icon" class="form-control sumo_search listIcon"
+                                            style="font-family: 'FontAwesome', Helvetica;">
+                                        <option value="">Select Icon</option>
+                                        <option th:each="row,i : ${icon}" th:value="${row}" th:attr="data-label=${row}" th:text="${row}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button name="submit" type="submit" class="btn btn-primary" value="more" th:text="${btn}">
+                                    Add Menu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+        </div>
+
+    </section>
+    <div class="settingSidebar">
+        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+        </a>
+        <div class="settingSidebar-body ps-container ps-theme-default">
+            <div class=" fade show active">
+                <div class="setting-panel-header">Setting Panel
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Select Layout</h6>
+                    <div class="selectgroup layout-color w-50">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
+                            <span class="selectgroup-button">Light</span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
+                            <span class="selectgroup-button">Dark</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                    <div class="selectgroup selectgroup-pills sidebar-color">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Color Theme</h6>
+                    <div class="theme-setting-options">
+                        <ul class="choose-theme list-unstyled mb-0">
+                            <li title="white" class="active">
+                                <div class="white"></div>
+                            </li>
+                            <li title="cyan">
+                                <div class="cyan"></div>
+                            </li>
+                            <li title="black">
+                                <div class="black"></div>
+                            </li>
+                            <li title="purple">
+                                <div class="purple"></div>
+                            </li>
+                            <li title="orange">
+                                <div class="orange"></div>
+                            </li>
+                            <li title="green">
+                                <div class="green"></div>
+                            </li>
+                            <li title="red">
+                                <div class="red"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="mini_sidebar_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Mini Sidebar</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="sticky_header_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Sticky Header</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
+                    <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                        <i class="fas fa-undo"></i> Restore Default
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="scripts">
+<!--    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+<!--    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+    <script th:src="@{/backend/assets/js/jquery-sortable-min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var postUrl = /*[[@{${url}}]]*/ '';
+        console.log(postUrl);
+        /*]]>*/
+        $(function () {
+            var id_cms_privileges = '1';
+            var sortactive = $(".draggable-menu").sortable({
+                group: '.draggable-menu',
+                delay: 200,
+                isValidTarget: function ($item, container) {
+                    var depth = 1, // Start with a depth of one (the element itself)
+                        maxDepth = 2,
+                        children = $item.find('ul').first().find('li');
+
+                    // Add the amount of parents to the depth
+                    depth += container.el.parents('ul').length;
+
+                    // Increment the depth for each time a child
+                    while (children.length) {
+                        depth++;
+                        children = children.find('ul').first().find('li');
+                    }
+
+                    return depth <= maxDepth;
+                },
+                onDrop: function ($item, container, _super) {
+
+                    if ($item.parents('ul').hasClass('draggable-menu-active')) {
+                        var isActive = 1;
+                        var data = $('.draggable-menu-active').sortable("serialize").get();
+                        var jsonString = JSON.stringify(data, null, ' ');
+                    } else {
+                        var isActive = 0;
+                        var data = $('.draggable-menu-inactive').sortable("serialize").get();
+                        var jsonString = JSON.stringify(data, null, ' ');
+                        $('#inactive_text').remove();
+                    }
+
+                    $.post(`${postUrl}/save-menu`, {menus: jsonString, isActive: isActive}, function (resp) {
+                        $('#menu-saved-info').fadeIn('fast').delay(1000).fadeOut('fast');
+                    });
+
+                    _super($item, container);
+                }
+            });
+
+
+        });
+    </script>
+</th:block>
+</html>

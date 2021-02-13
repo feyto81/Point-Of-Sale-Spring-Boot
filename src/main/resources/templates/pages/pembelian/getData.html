@@ -1,0 +1,23 @@
+<tr xmlns:th="http://www.thymeleaf.org" th:each="row,i : ${carts}"  th:if="${not #lists.isEmpty(carts)}">
+    <td th:text="${i.index+1}"></td>
+    <td th:text="${row.items.barcode}"></td>
+    <td th:text="${row.items.name}"></td>
+    <td class="rupiah" th:text="${row.items.price}"></td>
+    <td th:text="${row.qty}"></td>
+    <td class="subtotal" id="totall" th:text="${row.subtotal}"></td>
+    <td>
+        <a href="javascript:void(0)" class="btn btn-sm btn-warning btn-min" title="Kurangi Data" th:cart-id="${row.id}">
+            <i class="fas fa-sm fa fa-minus"></i></a>
+        <a href="javascript:void(0)" class="btn btn-sm btn-success btn-plus" title="Tambah Data" th:cart-id="${row.id}">
+            <i class="fas fa-sm fa fa-plus"></i></a>
+
+        <a href="javascript:void(0)" class="btn btn-sm btn-danger btn-delete" title="Hapus Data" th:cart-id="${row.id}">
+            <i class="fas fa-sm fa fa-trash"></i></a>
+    </td>
+</tr>
+
+<tr th:if="${#lists.isEmpty(carts)}">
+    <td colspan="8" class="text-center">
+        No data available
+    </td>
+</tr>

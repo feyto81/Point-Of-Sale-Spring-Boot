@@ -1,0 +1,42 @@
+<div th:fragment="columns-table" xmlns:th="http://www.thymeleaf.org">
+    <th scope="col" class="border-0"
+        th:each="col,i : ${columnsTable}">
+        <a
+                th:href="@{${currentUrl}(sortby=${col.columnsName}+'-asc')}"
+                th:with="currentUrl=(${@currentUrlWithoutParam.apply('sortby')})"
+                th:if="${param.sortby!=null && param.sortby.toString()==col.columnsName+'-desc'}"
+                title="Click to sort ascending"
+        >
+            <span th:text="${col.name}">Nama</span>
+            <i class="fas fa-sort-up"></i>
+        </a>
+        <a
+                th:href="@{${currentUrl}(sortby=${col.columnsName}+'-desc')}"
+                th:with="currentUrl=(${@currentUrlWithoutParam.apply('sortby')})"
+                th:if="${param.sortby!=null && param.sortby.toString()==col.columnsName+'-asc'}"
+                title="Click to sort descending"
+        >
+            <span th:text="${col.name}">Nama</span>
+            <i class="fas fa-sort-down"></i>
+        </a>
+        <a
+                th:href="@{${currentUrl}(sortby=${col.columnsName}+'-asc')}"
+                th:with="currentUrl=(${@currentUrlWithoutParam.apply('sortby')})"
+                th:if="${param.sortby!=null && param.sortby.toString()!=col.columnsName+'-desc' && param.sortby.toString()!=col.columnsName+'-asc'}"
+                title="Click to sort ascending"
+        >
+            <span th:text="${col.name}">Nama</span>
+            <i class="fas fa-sort"></i>
+        </a>
+        <a
+                th:href="@{${currentUrl}(sortby=${col.columnsName}+'-asc')}"
+                th:with="currentUrl=(${@currentUrlWithoutParam.apply('sortby')})"
+                th:if="${param.sortby==null}"
+                title="Click to sort ascending"
+        >
+            <span th:text="${col.name}">Nama</span>
+            <i class="fas fa-sort"></i>
+        </a>
+
+    </th>
+</div>

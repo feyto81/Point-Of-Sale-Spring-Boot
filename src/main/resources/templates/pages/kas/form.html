@@ -1,0 +1,237 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/templates}">
+<div class="main-content" layout:fragment="content">
+    <section class="section">
+        <div class="row">
+            <div class="col-12">
+                <a title="Return" class="btn btn-info" th:href="${param.return_url}">
+                    <i data-feather="arrow-left-circle"></i>
+                    &nbsp;Back
+                </a>
+                <br>
+                <br>
+                <div class="alert alert-warning alert-has-icon alert-dismissible show fade" th:if="${error}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Oops</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${error}" th:if="${error}"></strong>
+                    </div>
+                </div>
+                <div class="alert alert-success alert-has-icon alert-dismissible show fade" th:if="${success}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Wow, good job...</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${success}" th:if="${success}"></strong>
+                    </div>
+                </div>
+                <div class="card card-primary">
+                    <form enctype="multipart/form-data"
+                          th:action="@{${url}+'/save'}" method="POST" th:object="${cms}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('')})">
+                        <input type="hidden" name="return_url" th:value="${param.return_url}">
+                        <input type="hidden" name="current_url" th:value="${currentUrl}">
+                        <input type="hidden" th:field="*{id}" name="id" th:if="${edit}">
+                        <input type="hidden" name="edit" value="true" th:if="${edit}">
+                        <input type="hidden" name="user_id" th:value="${session.id_users}">
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="faktur" class="col-sm-2 control-label">Faktur
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="faktur" readonly name="faktur" th:value="${faktur}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tanggal" class="col-sm-2 control-label">Tanggal
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" th:value="${date}" id="tanggal" name="tanggal" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="col-sm-2 control-label">Type
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <select name="type" id="type" class="form-control">
+                                        <option disabled selected>Pilih</option>
+                                        <option value="pendapatan">Pemasukan</option>
+                                        <option value="pengeluaran">Pengeluaran</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pemasukan" class="col-sm-2 control-label">Pemasukan
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="pemasukan" name="pemasukan" value="0" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pengeluaran" class="col-sm-2 control-label">Pengeluaran
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="pengeluaran" name="pengeluaran" value="0" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group kotak-jenis-pengeluaran" style="display: none">
+                                <label  class="col-sm-2 control-label">Jenis Pengeluaran
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <select name="jenis_pengeluaran" id="jenis_pengeluaran" class="form-control">
+                                        <option disabled selected>Pilih</option>
+                                        <option value="kas akhir">Kas Akhir</option>
+                                        <option value="pengeluaran lain">Pengeluaran Lain</option>
+                                        <option value="biaya">Biaya</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group kotak-jenis-pemasukan" style="display: none">
+                                <label  class="col-sm-2 control-label">Jenis Pemasukan
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <select name="jenis_pemasukan" id="jenis_pemasukan" class="form-control">
+                                        <option disabled selected>Pilih</option>
+                                        <option value="kas awal">Kas Awal</option>
+                                        <option value="pemasukan lain">Pemasukan Lain</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pengeluaran" class="col-sm-2 control-label">Keterangan
+                                    <span class='text-danger' title='This field is required'>*</span></label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="keterangan" name="keterangan">
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" name="submit" value="save" class="btn btn-primary">Submit</button>
+                            <button name="submit" type="submit" class="btn btn-primary" value="more" th:if="${!edit}">Save & More</button>
+                            <a th:href="${param.return_url}" class="btn btn-warning">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="settingSidebar">
+        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+        </a>
+        <div class="settingSidebar-body ps-container ps-theme-default">
+            <div class=" fade show active">
+                <div class="setting-panel-header">Setting Panel
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Select Layout</h6>
+                    <div class="selectgroup layout-color w-50">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
+                            <span class="selectgroup-button">Light</span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
+                            <span class="selectgroup-button">Dark</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                    <div class="selectgroup selectgroup-pills sidebar-color">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Color Theme</h6>
+                    <div class="theme-setting-options">
+                        <ul class="choose-theme list-unstyled mb-0">
+                            <li title="white" class="active">
+                                <div class="white"></div>
+                            </li>
+                            <li title="cyan">
+                                <div class="cyan"></div>
+                            </li>
+                            <li title="black">
+                                <div class="black"></div>
+                            </li>
+                            <li title="purple">
+                                <div class="purple"></div>
+                            </li>
+                            <li title="orange">
+                                <div class="orange"></div>
+                            </li>
+                            <li title="green">
+                                <div class="green"></div>
+                            </li>
+                            <li title="red">
+                                <div class="red"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="mini_sidebar_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Mini Sidebar</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="sticky_header_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Sticky Header</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
+                    <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                        <i class="fas fa-undo"></i> Restore Default
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function(){
+            $('#type').change(function(){
+                value = $(this).val();
+                if(value == "pendapatan"){
+                    $('.kotak-jenis-pemasukan').css({display:"block"});
+                    $('.kotak-jenis-pengeluaran').css({display:"none"});
+                    $('#pengeluaran').attr('readonly','readonly');
+                    $('#pemasukan').removeAttr('readonly');
+                }else{
+                    $('.kotak-jenis-pemasukan').css({display:"none"});
+                    $('.kotak-jenis-pengeluaran').css({display:"block"});
+                    $('#pemasukan').attr('readonly','readonly');
+                    $('#pengeluaran').removeAttr('readonly');
+                }
+            })
+        });
+    </script>
+</th:block>
+</html>

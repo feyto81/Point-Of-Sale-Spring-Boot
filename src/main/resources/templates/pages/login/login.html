@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xl xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title th:text="'POS | '+${page_title}"></title>
+    <link rel="stylesheet" th:href="@{/backend/assets/css/app.min.css}">
+    <link rel="stylesheet" th:href="@{/backend/assets/bundles/bootstrap-social/bootstrap-social.css}">
+    <link rel="stylesheet" th:href="@{/backend/assets/css/style.css}">
+    <link rel="stylesheet" th:href="@{/backend/assets/css/components.css}">
+    <link rel="stylesheet" th:href="@{/backend/assets/css/custom.css}">
+    <link rel='shortcut icon' type='image/x-icon' th:href='@{/backend/assets/img/favicon.ico}' />
+</head>
+<body style="background-color: #0da8ee">
+<div class="loader"></div>
+<div id="app">
+    <section class="section">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Login</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="alert alert-danger alert-dismissible show fade" th:if="${param.error}">
+                                <div class="alert-body">
+                                    <button class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                    Invalid username or password.
+                                </div>
+                            </div>
+                            <div class="alert alert-success alert-dismissible show fade" th:if="${success}">
+                                <div class="alert-body">
+                                    <button class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                    <strong th:text="${success}" th:if="${success}"></strong>
+                                </div>
+                            </div>
+                            <form method="POST" th:action="@{${T(com.crocodic.koperasi.string.AdminUrlString).LOGIN}}" class="needs-validation" novalidate="">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                                    <div class="invalid-feedback">
+                                        Please fill in your email
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="d-block">
+                                        <label for="password" class="control-label">Password</label>
+                                    </div>
+                                    <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                                    <div class="invalid-feedback">
+                                        please fill in your password
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                                        Login
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script th:src="@{/backend/assets/js/app.min.js}"></script>
+<script th:src="@{/backend/assets/js/scripts.js}"></script>
+<script th:src="@{/backend/assets/js/custom.js}"></script>
+</body>
+</html>

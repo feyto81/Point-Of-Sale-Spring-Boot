@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xl xmlns:layout="http://www.w3.org/1999/xhtml">
+<th th:replace="layout/css :: css"></th>
+<th:block layout:fragment="css"></th:block>
+<body>
+<div class="loader"></div>
+<div id="app">
+    <div class="main-wrapper main-wrapper-1">
+        <div class="navbar-bg"></div>
+
+        <th th:replace="layout/header :: header"></th>
+        <th th:replace="layout/sidebar :: sidebar"></th>
+        <!-- Main Content -->
+        <div class="main-content" layout:fragment="content">
+
+        </div>
+        <footer class="main-footer">
+            <div class="footer-left">
+
+            </div>
+            <div class="footer-right">
+                Copyright &copy; 2020 <div class="bullet"></div> Design By <a href="#">Feyto</a>
+            </div>
+        </footer>
+    </div>
+</div>
+<th th:replace="layout/script :: script"></th>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

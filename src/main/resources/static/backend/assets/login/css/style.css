@@ -1,0 +1,260 @@
+body{
+	background-image: url(../images/background-login-2.svg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	font-family: 'Open Sans', sans-serif;
+}
+.container{
+	background-color: #fff;
+	margin-top: 50px;
+}
+
+/*navbar css */
+
+.site-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+a.site-logo {
+  font-size: 26px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #555;
+  text-decoration: none;
+}
+
+.site-navbar ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+.site-navbar ul li a {
+  color: #555 !important;
+  padding: 20px;
+  padding-right: 10px;
+  display: block;
+  text-decoration: none;
+  
+}
+.site-navbar .sign-in-btn {
+  color: #fff !important;
+  background-color: #2c3c9b !important;
+  border-color: #2c3c9b !important;
+  padding: 5px 20px !important;
+  margin-left: 15px;
+  margin-top: 13px;
+  display: block;
+  text-decoration: none;
+  
+}
+.site-navbar .sign-in-btn:focus{
+	box-shadow: none !important;
+}
+
+.nav-toggler {
+  border: none;
+  padding: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  height: 39px;
+  display: none;
+}
+.nav-toggler:focus {
+  border: none!important;
+  outline: none !important;
+}
+
+.nav-toggler span, 
+.nav-toggler span:before, 
+.nav-toggler span:after {
+  width: 28px;
+  height: 3px;
+  background-color: #555;
+  display: block;
+  transition: .3s;
+}
+.nav-toggler span:before {
+  content: '';
+  transform: translateY(-9px);
+}
+.nav-toggler span:after {
+  content: '';
+  transform: translateY(6px);
+}
+.nav-toggler.toggler-open span {
+  background-color: transparent;
+}
+.nav-toggler.toggler-open span:before {
+  transform: translateY(0px) rotate(45deg);
+}
+.nav-toggler.toggler-open span:after {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+
+
+/*pic login */
+.pic-login-2{
+	height: 75vh;
+}
+/*login form*/
+.login-form{
+	margin: auto;
+}
+.login-form h4{
+	text-align: center;
+	font-weight: 600;
+	margin-bottom: 40px;
+}
+.login-form input{
+	padding-left: 40px !important;
+  font-size: 15px;
+
+}
+
+.login-form input[type=text],input[type=password]{
+
+    height: 50px;
+}
+
+
+.login-form input:focus{
+	box-shadow: none !important;
+	border-color: #eee;
+}
+.login-form svg{
+	margin-top: -78px;
+	margin-left: 10px;
+}
+
+.remember-forgot-div{
+	display: flex;
+	justify-content: space-between;
+  font-size: 15px;
+}
+.remember-forgot-div a{
+	float: right;
+	color: black;
+}
+.login-btn{
+	text-align: center;
+	margin-top: 40px;
+}
+.login-btn button{
+	    background-color: #f73c74 !important;
+    border-color: #f73c74 !important;
+    padding: 7px 34px;
+    font-family: 'Open Sans', sans-serif;
+}
+.login-btn button:focus{
+
+	box-shadow: none !important;
+}
+.copyright{
+  text-align: center; 
+    padding: 20px;
+    font-size: 16px;
+    margin-top: 50px;
+}
+.copyright a{
+  color: #ff4462;
+  font-weight: bold;
+}
+.copyright a:hover{
+  color: #ff4462;
+}
+
+
+
+/**************************** media query 1024px **********************/
+@media only screen and (max-width: 1024px){
+  .pic-login-2{
+    height: auto;
+  }
+}
+/**************************** media query 736px **************/
+@media only screen and (max-width: 736px){
+  .pic-login-2{
+    display: none;
+  }
+  .login-form{
+    margin-top: 50px;
+  }
+
+#login{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+}
+/***************************** media query 414px **********/
+/* mobile breakpoint start */
+@media  screen and (max-width: 414px) {
+  body{
+    background-image: none;
+  }
+  .container{
+    margin-top: 0px;
+  }
+  /* navbar css for mobile start */
+  .nav-toggler{
+    display: block;
+  }
+  .site-navbar {
+    min-height: 60px;
+    justify-content: space-between;
+  }
+  .site-navbar ul {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 60px);
+    left: 0px;
+    top: 60px;
+    flex-direction: column;
+    align-items: center;
+    
+    background-color: rgba(0,0,0,.75);
+    max-height: 0;
+    overflow: hidden;
+    transition: .3s;
+    z-index: 999;
+  }
+  .site-navbar ul li {
+    width: 100%;
+    text-align: center;
+  }
+  .site-navbar ul li a {
+    padding: 25px;
+    color: #fff !important;
+  }
+  .site-navbar ul li a:hover {
+    background-color: rgba(255,255,255,.1);
+  }
+  .site-navbar ul.open {
+    max-height: 100vh;
+    overflow: visible;
+  }
+  .site-navbar .sign-in-btn {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  padding: 25px !important;
+  margin-left: 0px !important;
+  margin-top: 0px !important;
+  border-radius: 0 !important;
+  }
+  .site-navbar .sign-in-btn:hover{
+    background-color: rgba(255,255,255,.1) !important;
+  }
+  /* navbar css for mobile end */
+ 
+}
+
+
+
+
+
+
+

@@ -1,0 +1,255 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/templates}">
+<div class="main-content" layout:fragment="content">
+    <section class="section">
+        <div class="row">
+            <div class="col-12 col-sm-6 text-sm-left mb-3">
+
+
+            </div>
+            <div class="col-12 col-sm-6 text-right rightButtonRespon mb-3">
+
+                <div class="buttonheadertable">
+                    <div class="d-inline-flex mb-4 mb-sm-0 mx-auto btn-table-nav" role="group" aria-label="Page actions">
+                            <span th:each="bt,i : ${buttonAction}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('')})">
+                            <a th:href="@{${url}+'/'+${bt.link}+'?return_url='+${help.encodeString(currentUrl)}}" th:class="${bt.kelas}" style="margin-right: 5px" th:if="${bt.link!=''}">
+                                <i th:class="${bt.icon}"></i> <span th:text="${bt.text}"></span>
+                            </a>
+                             <a href="javascript:;" th:class="${bt.kelas}" style="margin-right: 5px" th:if="${bt.link==''}">
+                                <i th:class="${bt.icon}"></i> <span th:text="${bt.text}"></span>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12">
+
+                <div class="alert alert-warning alert-has-icon alert-dismissible show fade" th:if="${error}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Oops</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${error}" th:if="${error}"></strong>
+                    </div>
+                </div>
+                <div class="alert alert-success alert-has-icon alert-dismissible show fade" th:if="${success}">
+                    <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+                    <div class="alert-body">
+                        <div class="alert-title">Wow, good job...</div>
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong th:text="${success}" th:if="${success}"></strong>
+                    </div>
+                </div>
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="float-left">
+                            <div class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="btn btn-success dropdown-toggle">Bulk Action</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item has-icon text-danger" href="javascript:void(0)" onclick="deleteSelected()"><i class="far fa-trash-alt"></i> Delete Selected</a>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="float-right ml-2">
+                            <form method="urlencode(get)" id="form-limit-paging" style="display:inline-block" action="">
+                                <div class="input-group-sm">
+
+                                    <input type="hidden" name="sortby" th:value="${param.sortby}" th:if="${param.sortby}">
+                                    <input type="hidden" name="q" th:value="${param.q}" th:if="${param.q}">
+                                    <input type="hidden" name="page" th:value="${param.page}" th:if="${param.page}">
+                                    <input type="hidden" name="page" th:value="${param.parrent_id}" th:if="${param.parrent_id}">
+                                    <input type="hidden" name="return_url" th:value="${help.decodedString(param.return_url)}" th:if="${param.return_url}">
+                                    <select  class="form-control" onchange="$('#form-limit-paging').submit()" name="limit" th:value="${param.limit}" style="max-width: 130px;">
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='5'}" value="5">5</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='10'}" value="10">10</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='20'}" value="20">20</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='25'}" value="25">25</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='50'}" value="50">50</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='100'}" value="100">100</option>
+                                        <option th:selected="${param.limit!=null && param.limit.toString()=='200'}" value="200">200</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="float-right">
+                            <form method="URIEncoding(get)" action="">
+                                <div class="input-group">
+                                    <input type="hidden" name="sortby" th:value="${param.sortby}" th:if="${param.sortby}">
+                                    <input type="hidden" name="limit" th:value="${param.limit}" th:if="${param.limit}">
+                                    <input type="hidden" name="page" th:value="${param.page}" th:if="${param.page}">
+                                    <input type="hidden" name="parrent_id" th:value="${param.parrent_id}" th:if="${param.parrent_id}">
+                                    <input type="hidden" name="return_url" th:value="${help.decodedString(param.return_url)}" th:if="${param.return_url}">
+                                    <input type="text" class="form-control" name="q" th:value="${param.q}" placeholder="Search">
+                                    <div class="input-group-append">
+                                        <a th:href="@{${currentUrl}}" th:with="currentUrl=(${@currentUrlWithoutParam.apply('q')})" class="btn btn-warning" th:if="${param.q}"><i class="fas fa-ban"></i></a>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix mb-3"></div>
+                        <div class="table-responsive">
+                            <form th:action="@{${url}+'/action-selected'}" class="formtable" method="POST">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th class="pt-2">
+                                            <div class="custom-checkbox custom-checkbox-table custom-control">
+                                                <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad"
+                                                       class="custom-control-input" id="checkbox-all">
+                                                <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
+                                            </div>
+                                        </th>
+                                        <th th:replace="layout/table/columns-table :: columns-table"></th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr th:each="row,i : ${data.content}"  th:if="${not #lists.isEmpty(data.content)}">
+                                        <td>
+                                            <div class="custom-checkbox custom-control">
+                                                <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input checkbox"
+                                                       id="checkbox-2" name="idSelected" th:id="'checkbox'+${i.index}" th:value="${row.id}">
+                                                <label for="checkbox-2" class="custom-control-label" th:for="'checkbox'+${i.index}">&nbsp;</label>
+                                            </div>
+                                        </td>
+                                        <td th:text="${row.foto}">
+
+<!--                                            <a  href="https://via.placeholder.com/450/DBDBDB?text=NO IMAGE" th:if="${row.foto=='' || row.foto==null}">-->
+<!--                                                <img src="https://via.placeholder.com/450/DBDBDB?text=NO IMAGE" class="rounded-circle" alt="image" width="35" data-toggle="tooltip">-->
+<!--                                            </a>-->
+
+<!--                                            <a th:href="@{${row.foto}}" th:if="${row.foto!='' || row.foto!=null}">-->
+<!--                                                <img  th:src="@{${row.foto}}" class="rounded-circle" alt="image" width="35" data-toggle="tooltip">-->
+<!--                                            </a>-->
+                                        </td>
+                                        <td th:text="${row.name}"></td>
+                                        <td th:text="${row.email}"></td>
+                                        <td th:text="${row.cmsPrivileges.name}"></td>
+                                        <td th:with="currentUrl=(${@currentUrlWithoutParam.apply('')})">
+
+                                            <a title="Edit Data" th:href="@{${url}+'/edit/'+${row.id}+'?return_url='+${help.encodeString(currentUrl)}}" class="btn btn-icon btn-primary btn-sm">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            <button title="Delete Data" type="button" class="btn btn-icon btn-danger btn-sm" th:onclick="'hapusData(\'cms_users/delete/' +${row.id} + '\');'">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(data.content)}">
+                                        <td colspan="5" class="text-center">
+                                            No data available
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </form>
+
+                        </div>
+                        <th th:replace="layout/table/paginate :: paginate"></th>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <div class="settingSidebar">
+        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+        </a>
+        <div class="settingSidebar-body ps-container ps-theme-default">
+            <div class=" fade show active">
+                <div class="setting-panel-header">Setting Panel
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Select Layout</h6>
+                    <div class="selectgroup layout-color w-50">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
+                            <span class="selectgroup-button">Light</span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
+                            <span class="selectgroup-button">Dark</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                    <div class="selectgroup selectgroup-pills sidebar-color">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Color Theme</h6>
+                    <div class="theme-setting-options">
+                        <ul class="choose-theme list-unstyled mb-0">
+                            <li title="white" class="active">
+                                <div class="white"></div>
+                            </li>
+                            <li title="cyan">
+                                <div class="cyan"></div>
+                            </li>
+                            <li title="black">
+                                <div class="black"></div>
+                            </li>
+                            <li title="purple">
+                                <div class="purple"></div>
+                            </li>
+                            <li title="orange">
+                                <div class="orange"></div>
+                            </li>
+                            <li title="green">
+                                <div class="green"></div>
+                            </li>
+                            <li title="red">
+                                <div class="red"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="mini_sidebar_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Mini Sidebar</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="sticky_header_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Sticky Header</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
+                    <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                        <i class="fas fa-undo"></i> Restore Default
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

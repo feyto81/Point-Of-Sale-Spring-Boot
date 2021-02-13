@@ -1,0 +1,731 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/templates}">
+<div class="main-content" layout:fragment="content">
+    <section class="section">
+        <form id="formSave" method="post">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card card-primary">
+                                <div class="card-body">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="vertical-align: top">
+                                                <label for="date">Date</label>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" id="date" th:value="${date}" readonly class="form-control">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top; width: 30%">
+                                                <label for="user">Kasir</label>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" id="user" th:value="${session.name}" class="form-control" readonly>
+                                                    <input type="hidden" name="id_users" th:value="${session.id_users}">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">
+                                                <label for="customer">Customer</label>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <select id="customer" name="customer" class="form-control">
+                                                        <option value="umum">Umum</option>
+                                                        <option th:value="${row.name}" th:text="${row.name}" th:each="row,i : ${customers}" ></option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card card-primary">
+                                <div class="card-body">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="vertical-align: top;width: 30%">
+                                                <label for="barcode">Barcode</label>
+                                            </td>
+                                            <td>
+                                                <div class="form-group input-group">
+                                                    <input type="hidden" id="item_id" name="item_id">
+                                                    <input type="hidden" id="price" name="price">
+                                                    <input type="hidden" id="stock" name="stock">
+                                                    <input type="text" id="barcode" name="barcode" class="form-control" autofocus>
+                                                    <span class="input-group-append">
+                                                    <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#modal-item">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+									            </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">
+                                                <label for="qty">Qty</label>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="id" name="id">
+                                                    <input type="number" id="qty" name="qty" value="" min="" class="form-control">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <div>
+                                                    <button type="submit" name="submit" id="add_cart" class="btn btn-primary">
+                                                        <i class="fa fa-cart-plus"></i> Add
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card card-primary">
+                                <div class="card-body">
+                                    <div style="text-align: right">
+                                        <h4>Invoice <b>
+<!--                                            <span id="invoice">[[${transaction_code}]]</span>-->
+                                        </b></h4>
+                                        <input type="hidden" name="transaction_code" th:value="${transaction_code}">
+                                        <h2><b><span id="grand_total2" style="font-size: 50pt">0</span></b></h2>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-primary">
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Barcode</th>
+                                <th>Product Item</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th width="10%">Discount Item</th>
+                                <th width="15%">Total</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="cart_table">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{${url}+'/save'}" method="post" th:object="${cms}">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card card-primary">
+                            <div class="card-body">
+                                <table width="100%">
+                                    <tr>
+                                        <td style="vertical-align: top;width: 30%">
+                                            <label for="sub_total">Sub Total</label>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" name="sub_total" id="sub_total" value="" class="form-control" readonly>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">
+                                            <label for="discount">Discount</label>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" id="discount" name="discount" value="0" min="0" class="form-control">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">
+                                            <label for="grand_total">Grand Total</label>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" id="grand_total" name="grand_total" class="form-control" readonly>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-primary">
+                            <div class="card-body">
+                                <table width="100%">
+                                    <tr>
+                                        <td style="vertical-align: top; width: 30%">
+                                            <label for="cash">Paid</label>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" id="cash" name="cash" value="0" min="0" class="form-control">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">
+                                            <label for="change">Change</label>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" id="change" name="change" class="form-control" readonly>
+                                                <input type="hidden" id="" name="date" th:value="${date}">
+                                                <input type="hidden" name="sale_id" id="sale_id" th:value="${transaction_code}">
+                                                <input type="hidden" name="user_id" th:value="${session.id_users}">
+                                                <input type="hidden" name="created_at" th:value="${created_at}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">
+                                            <label>Note</label>
+                                        </td>
+                                        <br>
+                                        <td>
+                                            <div class="form-group">
+                                                <textarea id="note" name="note" rows="3" class="form-control" required=""></textarea>
+                                                <input type="hidden" id="customer_hidden" name="customer_name">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-primary">
+                            <div class="card-body">
+                                <table width="100%">
+                                    <div align="right">
+                                        <h1><b><span id="kembali2" style="font-size: 50pt">0</span></b></h1>
+                                        <h4><b><span id="alert-kembali2"></span></b></h4>
+                                    </div>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12">
+                <button type="submit" id="process_payment" class="btn btn-flat btn-lg btn-success">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+            </div>
+        </form>
+
+    </section>
+    <!-- basic item -->
+    <div class="modal fade bd-example-modal-lg" id="modal-item" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Select Product Item</h5>
+                    <button type="button" id="closeModalTambah" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body table-responsive">
+                    <table class="table table-bordered table-striped" id="table2">
+                        <thead>
+                        <tr>
+                            <th>Barcode</th>
+                            <th>Name</th>
+                            <th>Unit</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="cms : ${listItems}">
+                            <td th:text="${cms.barcode}"></td>
+                            <td th:text="${cms.name}"></td>
+                            <td th:text="${cms.units.name}"></td>
+                            <td class="text-right" th:text="${cms.price}"></td>
+                            <td class="text-right" th:text="${cms.stock}"></td>
+                            <td class="text-right">
+                                <button class="btn btn-info btn-xs" id="select"
+                                        th:data-id="${cms.item_id}"
+                                        th:data-barcode="${cms.barcode}"
+                                        th:data-name="${cms.name}"
+                                        th:data-unit="${cms.units.name}"
+                                        th:data-price="${cms.price}"
+                                        th:data-stock="${cms.stock}">
+                                    <i class="fa fa-check"></i> Select
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="settingSidebar">
+        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+        </a>
+        <div class="settingSidebar-body ps-container ps-theme-default">
+            <div class=" fade show active">
+                <div class="setting-panel-header">Setting Panel
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Select Layout</h6>
+                    <div class="selectgroup layout-color w-50">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
+                            <span class="selectgroup-button">Light</span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
+                            <span class="selectgroup-button">Dark</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                    <div class="selectgroup selectgroup-pills sidebar-color">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
+                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                                  data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <h6 class="font-medium m-b-10">Color Theme</h6>
+                    <div class="theme-setting-options">
+                        <ul class="choose-theme list-unstyled mb-0">
+                            <li title="white" class="active">
+                                <div class="white"></div>
+                            </li>
+                            <li title="cyan">
+                                <div class="cyan"></div>
+                            </li>
+                            <li title="black">
+                                <div class="black"></div>
+                            </li>
+                            <li title="purple">
+                                <div class="purple"></div>
+                            </li>
+                            <li title="orange">
+                                <div class="orange"></div>
+                            </li>
+                            <li title="green">
+                                <div class="green"></div>
+                            </li>
+                            <li title="red">
+                                <div class="red"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="mini_sidebar_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Mini Sidebar</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-15 border-bottom">
+                    <div class="theme-setting-options">
+                        <label class="m-b-0">
+                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                                   id="sticky_header_setting">
+                            <span class="custom-switch-indicator"></span>
+                            <span class="control-label p-l-10">Sticky Header</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
+                    <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                        <i class="fas fa-undo"></i> Restore Default
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal edit-->
+
+    <div class="modal fade" id="modal-item-edit">
+        <div class="modal-dialog modal-lg">
+            <form id="formEdit" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h4 class="modal-title">Update Product Item</h4>
+                        <button type="button" id="closeModalEdit" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body table-responsive">
+                        <input type="hidden" id="cartid_item">
+                        <div class="form-group">
+                            <label for="product_item">Product Item</label>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="text" id="barcode_item" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="product_item" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="price_item">Price</label>
+                            <input type="number" id="price_item" name="price" min="0" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="qty_item">Qty</label>
+                            <input type="number" id="qty_item" name="qty" min="1" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="total_before">Total Before discount</label>
+                            <input type="number" id="total_before" min="0" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="discount_item">Discount Per Item</label>
+                            <input type="number" id="discount_item" name="discount_item" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="total_item">Total After Discount</label>
+                            <input type="number" id="total_item" name="total" min="0" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-right">
+
+                            <button type="submit" class="btn btn-flat btn-success"><i class="fa fa-paper-plane"></i> Save</button>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="scripts">
+    <script>
+        $(function () {
+            $('#table2').DataTable()
+            calculate();
+        });
+        $(document).on('click', '#select', function() {
+            $('#item_id').val($(this).data('id'))
+            $('#barcode').val($(this).data('barcode'))
+            $('#price').val($(this).data('price'))
+            $('#stock').val($(this).data('stock'))
+            // $('#modal-item').modal('hide')
+            $('#closeModalTambah').click();
+        });
+    </script>
+    <script>
+        function loadDataTable(){
+            $.ajax({
+                url: "http://localhost:8084/test/admin/sale/get",
+                success:function(data){
+                    $('#cart_table').html(data);
+                    calculate();
+                }
+            })
+        }
+        loadDataTable();
+        $('#formSave').submit(function(e){
+            e.preventDefault();
+            var request = new FormData(this);
+            var item_id = $('#item_id').val()
+            var price = $('#price').val()
+            var stock = $('#stock').val()
+            var qty = $('#qty').val()
+            var customer = $('#customer').val()
+            console.log(qty)
+            if(item_id == '') {
+                iziToast.error({
+                    title: 'Error !',
+                    message: 'Product Belum Di Pilih',
+                    position: 'topRight'
+                });
+                $('#barcode').focus()
+            } else if(stock < 1) {
+                iziToast.error({
+                    title: 'Error !',
+                    message: 'Stock Habis',
+                    position: 'topRight'
+                });
+                $('#item_id').val('')
+                $('#barcode').val('')
+                $('#barcode').focus();
+            } else if(qty > stock) {
+                iziToast.error({
+                    title: 'Error !',
+                    message: 'Pembelian Lebih Dari Stock Yang Ada',
+                    position: 'topRight'
+                });
+                $('#qty').val('0')
+                $('#qty').focus()
+            } else {
+                $.ajax({
+                    url: "http://localhost:8084/test/cart/add",
+                    method: "POST",
+                    data: request,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success:function(data){
+                        if(data == "sukses"){
+                            iziToast.success({
+                                title: 'Success !',
+                                message: 'Berhasil Menambahkan Data Ke Keranjang',
+                                position: 'topRight'
+                            });
+                            loadDataTable();
+                            calculate();
+                            $('#customer_hidden').val(customer);
+                            <!--                  rupiah();-->
+                        }
+                        else {
+                            alert('gagal menambah data');
+                        }
+                    }
+                });
+            }
+        });
+
+        function calculate() {
+            var subtotal = 0;
+            $('#cart_table tr').each(function() {
+                subtotal += parseInt($(this).find('#total').text())
+            })
+            isNaN(subtotal) ? $('#sub_total').val(0) : $('#sub_total').val(subtotal)
+
+            var discount = $('#discount').val()
+            var grand_total = subtotal - discount
+            if(isNaN(grand_total)) {
+                $('#grand_total').val(0)
+                $('#grand_total2').text(0)
+
+            } else {
+                $('#grand_total').val(grand_total)
+                $('#grand_total2').text(grand_total)
+            }
+
+            var cash = $('#cash').val();
+            var result = cash - grand_total;
+            cash != 0 ? $('#change').val(cash - grand_total) : $('#change').val(0)
+            cash != 0 ? $('#kembali2').text(cash - grand_total) : $('#kembali2').text(0)
+            cash != 0 ? $('#alert-kembali2').html('Change: '+result) : $('#alert-kembali2').text(0)
+            // unutk 0 discount
+            if(discount == '') {
+                $('#discount').val()
+            }
+        }
+
+        function count_edit_modal() {
+            var price = $('#price_item').val()
+            var qty = $('#qty_item').val()
+            var discount = $('#discount_item').val()
+
+            total_before = price * qty
+            $('#total_before').val(total_before)
+
+            total = (price - discount) * qty
+            $('#total_item').val(total)
+            // unutk 0 discount
+            if(discount == '') {
+                $('#discount_item').val()
+            }
+        }
+
+        $(document).ready(function() {
+            calculate()
+
+        })
+        $(document).on('keyup mouseup', '#discount, #cash', function() {
+            calculate()
+        })
+        $(document).on('keyup mouseup', '#price_item, #qty_item, #discount_item', function() {
+            count_edit_modal()
+        })
+
+        $(document).on('click', '.btn-delete', function(e){
+            if(confirm('Apakah Anda Yakin?')) {//
+                e.preventDefault();
+                var cart_id = $(this).attr('cart-id');
+                $.ajax({
+                    url: "http://localhost:8084/test/cart/delete/"+cart_id,
+                    method: "GET",
+                    success:function(data){
+                        if(data == "sukses"){
+                            iziToast.success({
+                                title: 'Success !',
+                                message: 'Data Keranjang Berhasil Di Hapus',
+                                position: 'topRight'
+                            });
+                            $('#item_id').val('')
+                            $('#barcode').val('')
+                            loadDataTable();
+                            <!--                rupiah();-->
+                        } else {
+                            alert('Gagal');
+                        }
+                    }
+                });
+            }//
+        });
+
+        $(document).on('click', '#update_cart', function() {
+            $('#cartid_item').val($(this).data('cartid'))
+            $('#barcode_item').val($(this).data('barcode'))
+            $('#product_item').val($(this).data('product'))
+            $('#price_item').val($(this).data('price'))
+            $('#qty_item').val($(this).data('qty'))
+            $('#total_before').val($(this).data('price') * $(this).data('qty'))
+            $('#discount_item').val($(this).data('discount'))
+            $('#total_item').val($(this).data('total'))
+        });
+
+        $('#formEdit').submit(function(e){
+            e.preventDefault();
+            var request = new FormData(this);
+            var cart_id = $('#cartid_item').val();
+            var price = $('#price_item').val()
+            var qty = $('#qty_item').val()
+            var discount = $('#discount_item').val()
+            var total = $('#total_item').val()
+            if(price == '' || price < 1) {
+                iziToast.error({
+                    title: 'Error !',
+                    message: 'Harga Tidak Boleh Kosong',
+                    position: 'topRight'
+                });
+                $('#price_item').focus()
+            } else if(qty == '' || qty < 1) {
+                iziToast.error({
+                    title: 'Error !',
+                    message: 'Qty Tidak Boleh Kosong',
+                    position: 'topRight'
+                });
+                $('#qty_item').focus()
+            } else {
+                $.ajax({
+                    url: "http://localhost:8084/test/cart/update/"+cart_id,
+                    method: "POST",
+                    data: request,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success:function(data){
+                        if(data == "sukses"){
+                            $('#closeModalEdit').click();
+                            $('#formSave')[0].reset();
+                            iziToast.success({
+                                title: 'Success !',
+                                message: 'Data Keranjang Berhasil Di Update',
+                                position: 'topRight'
+                            });
+                            loadDataTable();
+                            <!--                  rupiah();-->
+                        }
+                        else {
+                            alert('Gagal');
+                        }
+                    }
+                });
+            }
+        });
+
+
+        //min
+        $(document).on('click', '.btn-min', function(e){
+            e.preventDefault();
+            var cart_id = $(this).attr('cart-id');
+            $.ajax({
+                url: "http://localhost:8084/test/cart/min/"+cart_id,
+                method: "get",
+
+                success:function(data){
+                    if(data == "sukses"){
+                        iziToast.success({
+                            title: 'Success !',
+                            message: 'Cart Berhasil Di Kurangi',
+                            position: 'topRight'
+                        });
+                        loadDataTable();
+                        <!--                rupiah();-->
+                    } else {
+                        alert('Gagal');
+                    }
+                }
+            });
+        });
+
+        //min
+        $(document).on('click', '.btn-plus', function(e){
+            e.preventDefault();
+            var cart_id = $(this).attr('cart-id');
+            $.ajax({
+                url: "http://localhost:8084/test/cart/plus/"+cart_id,
+                method: "get",
+
+                success:function(data){
+                    if(data == "sukses"){
+                        iziToast.success({
+                            title: 'Success !',
+                            message: 'Cart Berhasil Di Tambah',
+                            position: 'topRight'
+                        });
+                        loadDataTable();
+                        <!--                rupiah();-->
+                    } else {
+                        alert('Gagal');
+                    }
+                }
+            });
+        });
+    </script>
+</th:block>
+</html>

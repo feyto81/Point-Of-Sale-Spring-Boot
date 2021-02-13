@@ -1,0 +1,85 @@
+<html moznomarginboxes mozdisallowselectionprint xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Laporan</title>
+    <link rel="stylesheet" th:href="@{/backend/assets/lte/bower_components/bootstrap/dist/css/bootstrap.css}">
+
+</head>
+
+
+<body onload="window.print()">
+<div class="containter">
+    <div class="row">
+        <div class="col-md-12">
+            <div style="padding-bottom:5px;margin-bottom:5px">
+
+                <b style="font-size:16px; margin-bottom:10px;">CV Contoh</b>
+                <br>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table" style="width:500px">
+                <tbody>
+                <tr>
+                    <td style="font-size:16px" colspan="3"><b>LAPORAN PEMBELIAN</b></td>
+                </tr>
+                <tr>
+                    <td>PERIODE</td>
+                    <td style="width:15px">:</td>
+                    <td>[[${startdate}]] s/d [[${enddate}]]</td>
+                </tr>
+                <tr>
+                    <td>TOTAL PEMBELIAN</td>
+                    <td>:</td>
+                    <td th:text="${pembelian}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Faktur</th>
+                    <th>Pembelian</th>
+                    <th>Supplier</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="row,i : ${listPembelian}"  th:if="${not #lists.isEmpty(listPembelian)}">
+                    <td th:text="${i.index+1}"></td>
+                    <td  th:text="${row.tanggalPembelian}"></td>
+                    <td th:text="${row.faktur}"></td>
+                    <td  th:text="${row.total}"></td>
+                    <td th:text="${row.suppliers.name}"></td>
+                </tr>
+
+                </tbody>
+                <thead>
+
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+</body>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/backend/assets/lte/bower_components/jquery/dist/jquery.min.js}"></script>
+    <script th:src="@{/backend/assets/lte/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+</th:block>
+</html>
